@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:chat_support/widgets/chat_message.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +10,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   final _textController = TextEditingController();
-  final _focusNode = new FocusNode();
+  final _focusNode = FocusNode();
   final List<ChatMessage> _messages = [];
   bool _estaEscribiendo = false;
 

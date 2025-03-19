@@ -1,5 +1,8 @@
+import 'package:chat_support/helpers/mostrar_alerta.dart';
+import 'package:chat_support/services/auth_service.dart';
 import 'package:chat_support/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -10,7 +13,7 @@ class LoginPage extends StatelessWidget {
       backgroundColor: const Color.fromARGB(255, 233, 240, 224),
       body: SafeArea(
         child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(), // efecto del scroll. 
+          physics: BouncingScrollPhysics(), // efecto del scroll.
           child: Container(
             height: MediaQuery.of(context).size.height * 0.9,
             child: Column(
@@ -18,7 +21,11 @@ class LoginPage extends StatelessWidget {
               children: [
                 Logo(),
                 _Form(),
-                Labels(ruta: 'register', cuenta: '¿No tienes cuenta?', creaLogin: 'Crea una ahora!',),
+                Labels(
+                  ruta: 'register',
+                  cuenta: '¿No tienes cuenta?',
+                  creaLogin: 'Crea una ahora!',
+                ),
                 Text(
                   'Términos y condiciones de uso',
                   style: TextStyle(color: Colors.black45),
@@ -43,15 +50,22 @@ class _FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+
     return Container(
       margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 50),
       child: Column(
         children: [
-           Text('Iniciar sesión', style: TextStyle(color: const Color.fromARGB(255, 18, 16, 86),
-                fontSize: 30,
-                fontWeight: FontWeight.bold,),),
-               SizedBox(height: 20),
+          Text(
+            'Iniciar sesión',
+            style: TextStyle(
+              color: const Color.fromARGB(255, 18, 16, 86),
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 20),
           CustomInput(
             hintText: 'Email',
             prefixIcon: Icon(Icons.mail_outline),
@@ -70,9 +84,26 @@ class _FormState extends State<_Form> {
           SizedBox(height: 20),
           ButtonBlue(
             text: 'Ingresar',
-            onPressed: () {
-           
-            },
+            onPressed:
+                authService.autenticando
+                    ? null
+                    : () async {
+                      FocusScope.of(context).unfocus(); // ocultar el teclado
+                      final loginOk = await authService.login(
+                        emailCtrl.text.trim(),
+                        passCtrl.text.trim(),
+                      );
+                      if (loginOk) {
+                        Navigator.pushReplacementNamed(context, 'usuarios');
+                      } else {
+                        //mostrar alerta
+                        mostrarAlerta(
+                          context,
+                          'Login incorrecto',
+                          'Revise sus credenciales',
+                        );
+                      }
+                    },
           ),
         ],
       ),

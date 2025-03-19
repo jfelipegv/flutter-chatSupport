@@ -37,11 +37,11 @@ class ChatMessage extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.only(bottom: 5, left: 5, right: 40),
         padding: EdgeInsets.all(8.0),
-        child: Text(texto, style: TextStyle(color: Colors.black87)),
         decoration: BoxDecoration(
           color: Color.fromARGB(58, 147, 147, 147),
           borderRadius: BorderRadius.circular(10),
         ),
+         child: Text(texto, style: TextStyle(color: Colors.black87)),
       ),
     );
   }

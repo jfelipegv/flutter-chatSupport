@@ -1,5 +1,8 @@
+import 'package:chat_support/helpers/mostrar_alerta.dart';
+import 'package:chat_support/services/auth_service.dart';
 import 'package:chat_support/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
@@ -10,18 +13,27 @@ class RegisterPage extends StatelessWidget {
       backgroundColor: const Color.fromARGB(255, 233, 240, 224),
       body: SafeArea(
         child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(), // efecto del scroll. 
+          physics: BouncingScrollPhysics(), // efecto del scroll.
           child: Container(
             height: MediaQuery.of(context).size.height * 0.9,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Logo(),
-                Text('Registrate', style: TextStyle(color: const Color.fromARGB(255, 18, 16, 86),
-                fontSize: 30,
-                fontWeight: FontWeight.bold,),),
+                Text(
+                  'Registrate',
+                  style: TextStyle(
+                    color: const Color.fromARGB(255, 18, 16, 86),
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 _Form(),
-                Labels(ruta: 'login', cuenta: '¿Ya tienes una cuenta?', creaLogin: 'Ingresa ahora',),
+                Labels(
+                  ruta: 'login',
+                  cuenta: '¿Ya tienes una cuenta?',
+                  creaLogin: 'Ingresa ahora',
+                ),
                 Text(
                   'Términos y condiciones de uso',
                   style: TextStyle(color: Colors.black45),
@@ -47,11 +59,12 @@ class _FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 50),
       child: Column(
         children: [
-           CustomInput(
+          CustomInput(
             hintText: 'Nombre',
             prefixIcon: Icon(Icons.perm_identity),
             isPassword: false,
@@ -77,8 +90,26 @@ class _FormState extends State<_Form> {
           SizedBox(height: 20),
           ButtonBlue(
             text: 'Registrarse',
-            onPressed: () {
-           
+            onPressed: () async {
+              FocusScope.of(context).unfocus();
+              final registerOk = await authService.register(
+                nameCtrl.text.trim(),
+                emailCtrl.text.trim(),
+                passCtrl.text.trim(),
+              );
+              if ( registerOk == true ){
+                 mostrarAlerta(
+                          context,
+                          'Registro Correcto',
+                          'Usuario registrado : ${authService.usuario?.nombre}',
+                        );
+              } else {
+                mostrarAlerta(
+                          context,
+                          'Error en registro',
+                          registerOk
+                        );
+              }
             },
           ),
         ],
