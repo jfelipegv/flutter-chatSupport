@@ -1,5 +1,5 @@
 import 'package:chat_support/helpers/mostrar_alerta.dart';
-import 'package:chat_support/services/auth_service.dart';
+import '../services/services.dart';
 import 'package:chat_support/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
